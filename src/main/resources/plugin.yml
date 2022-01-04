@@ -1,0 +1,15 @@
+name: ItemLore
+version: '${project.version}'
+main: net.wycre.itemlore.Main
+api-version: 1.18
+authors: [ Aclamendo ]
+description: Allows users to modify an item's NBT data using a command
+website: www.wycre.net
+commands:
+  itemlore:
+    description: Modifies the lore of an item (supports color codes)
+    usage: /itemlore <add/remove> <text>
+
+  itemname:
+    description: Sets the name of an item (supports color codes)
+    usage: /itemname <text>
