@@ -59,6 +59,7 @@ public class MainCommand implements CommandExecutor {
             // If User enters no args, treat like incorrect arg or help arg
             if (args.length < 1) { // No args
                 itemLoreHelp(player);
+                return true;
             }
 
             // check if metadata is null
