@@ -21,6 +21,10 @@ public class CommonStrings {
      * If the player has made an error in command execution
      */
     public final static String PLAYER_HAND_EMPTY = ChatColor.RED + "You must be holding an item!";
+    public final static String ARG_REQUIRES_INT = ChatColor.RED + "Line number must be an integer!";
+    public final static String ARG_LESS_THAN_ONE = ChatColor.RED + "Line number must be greater than zero!";
+    public final static String MISSING_LINE_ARG = ChatColor.RED + "Line number must be set!";
+    public final static String MISSING_TEXT_ARG = ChatColor.RED + "You must specify some text!";
 
     /**
      * If the command is not applicable to a given item

@@ -10,6 +10,17 @@ import java.util.List;
  */
 public class StringManagement {
 
+    // Build String From Args
+    public static String argsToString(int firstArgIndex, String[] args) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(args[firstArgIndex]); // Create initial word
+        for (int i = firstArgIndex+1; i < args.length; i++) { // Add all other words
+            stringBuilder.append(" ").append(args[i]);
+        } // Add all other words
+        // convert the stringBuilder into a string
+        return stringBuilder.toString();
+    }
+
     /**
      * Translates '&' from color codes within a List to the correct char
      * Call with <code> this.color()</code>

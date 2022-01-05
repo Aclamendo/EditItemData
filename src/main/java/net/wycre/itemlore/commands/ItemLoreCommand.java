@@ -16,6 +16,13 @@ import java.util.logging.Logger;
 
 import static net.wycre.itemlore.utils.CommonStrings.*;
 
+/*
+*  ## TODO Line specifiers for /itemlore remove:
+*  - range of lines
+*  - specific lines
+*/
+
+
 /**
  * Handle Commands for ItemData plugin (codename ItemLore) <br><br>
  * Implements two commands under the permission "wycre.itemdata" <br><br>
@@ -32,7 +39,7 @@ public class ItemLoreCommand implements TabExecutor {
     }
 
     // Various Values
-    private static final List<String> TCOMPLETE_NOARGS = new ArrayList<String>(Arrays.asList("add", "remove"));
+    private static final List<String> TCOMPLETE_NOARGS = new ArrayList<>(Arrays.asList("add", "remove", "set"));
 
 
     // Command Logic
@@ -80,16 +87,15 @@ public class ItemLoreCommand implements TabExecutor {
             else {
                 // if "add" is in first arg
                 if (args[0].equalsIgnoreCase("add")) {
-                    // Use StringBuilder to put all args on one string
-                    StringBuilder stringBuilder = new StringBuilder();
-                    // Create the new lore line from all other args
-                    stringBuilder.append(args[1]); // Create initial word
-                    for (int i = 2; i < args.length; i++) { // Add all other words
-                        stringBuilder.append(" ").append(args[i]);
-                    } // Add all other words
 
-                    // convert the stringBuilder into a string
-                    String completeLine = stringBuilder.toString();
+                    // Handle Line Creation
+                    String completeLine;
+                    if (args.length > 1) {
+                        completeLine = StringManagement.argsToString(1, args);
+                    } else {
+                        player.sendMessage(MISSING_TEXT_ARG);
+                        return true;
+                    }
 
                     // Create staging list of lore lines, add new entry
                     List<String> stagingLore = new ArrayList<>();
@@ -106,7 +112,7 @@ public class ItemLoreCommand implements TabExecutor {
                     metadata.setLore(StringManagement.color(stagingLore));
                     item.setItemMeta(metadata);
 
-
+                    return true;
                 } // Handle adding lines of lore
 
                 // Removes one line from the lore
@@ -134,7 +140,67 @@ public class ItemLoreCommand implements TabExecutor {
                         String playerMessage = message1 + message2 + message3;
                         player.sendMessage(playerMessage);
                     }
+                    return true;
                 } // handle removing lines of lore
+
+                // Set Command
+                if (args[0].equalsIgnoreCase("set")) {
+
+                    int lineNum;
+
+                    // Handle Line number
+                    try {
+                        // Attempt to parse line number
+                        lineNum = Integer.parseInt(args[1]);
+                    } catch (NumberFormatException ex) {
+                        player.sendMessage(ARG_REQUIRES_INT);
+                        return true;
+                    } catch (ArrayIndexOutOfBoundsException ex) {
+                        player.sendMessage(MISSING_LINE_ARG);
+                        return true;
+                    }
+                    if (lineNum < 1) {
+                        player.sendMessage(ARG_LESS_THAN_ONE);
+                        return true;
+                    }
+
+
+                    // Create or modify lore
+                    List<String> stagingLore;
+                    if (metadata.getLore() == null) {
+                        stagingLore = new ArrayList<>();
+                    } else {
+                        stagingLore = metadata.getLore();
+                    }
+
+                    // Handle Line Creation
+                    String completeLine;
+                    if (args.length > 2) {
+                        completeLine = StringManagement.argsToString(2, args);
+                    } else {
+                        player.sendMessage(MISSING_TEXT_ARG);
+                        return true;
+                    }
+
+                    // Handle lore on elevated lines
+                    if (metadata.getLore() == null) {
+                        for (int i = 0; i < lineNum; i++) {
+                            stagingLore.add(" ");
+                        } // Fill with empty lines
+                    } // If setting excess line in empty lore, add excess lines
+                    else if (lineNum > metadata.getLore().size()) {
+                        for (int i = metadata.getLore().size()-1; i<lineNum-1; i++ ) {
+                            stagingLore.add(" ");
+                        } // Fill with empty lines
+                    } // If setting excess line, add blank lines before
+
+                    // Merge Data and meta
+                    stagingLore.set(lineNum - 1, StringManagement.color(completeLine));
+                    metadata.setLore(stagingLore);
+                    item.setItemMeta(metadata);
+                    return true;
+                } // Handle setting lines individually
+
                 // Incorrect First arg
                 else {
                     itemLoreHelp(player);

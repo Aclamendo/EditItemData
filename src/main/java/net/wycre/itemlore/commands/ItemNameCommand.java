@@ -65,15 +65,7 @@ public class ItemNameCommand implements TabExecutor {
 
             // If args are present
             else {
-                // Use StringBuilder to put all args on one string
-                StringBuilder stringBuilder = new StringBuilder();
-                // Create the new lore line from all other args
-                stringBuilder.append(args[0]); // Create initial word
-                for (int i = 1; i < args.length; i++) { // Add all other words
-                    stringBuilder.append(" ").append(args[i]);
-                } // Add all other words
-                String fullName = stringBuilder.toString();
-
+                String fullName = StringManagement.argsToString(0, args);
                 metadata.setDisplayName(StringManagement.color(fullName));
                 item.setItemMeta(metadata);
             } // Cat all args into a string, set displayName to that string
