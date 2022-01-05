@@ -3,15 +3,14 @@ package net.wycre.itemlore.commands;
 import net.wycre.itemlore.Main;
 import net.wycre.itemlore.utils.StringManagement;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -23,12 +22,17 @@ import static net.wycre.itemlore.utils.CommonStrings.*;
  * Both commands fully support color codes
  * @author Wycre; Aclamendo
  */
-public class ItemLoreCommand implements CommandExecutor {
+public class ItemLoreCommand implements TabExecutor {
     // Establish Main as an object to be referenced later
     private final Main main;
+
+    // Constructor
     public ItemLoreCommand(Main main) {
         this.main = main;
     }
+
+    // Various Values
+    private static final List<String> TCOMPLETE_NOARGS = new ArrayList<String>(Arrays.asList("add", "remove"));
 
 
     // Command Logic
@@ -146,10 +150,17 @@ public class ItemLoreCommand implements CommandExecutor {
 
 
     // Tab complete options
-    // TODO add tab complete options
+    @Override
+    public List<String> onTabComplete(@NonNull CommandSender sender,
+                                      @NonNull Command command,
+                                      @NonNull String alias,
+                                      String[] args) {
+        if (args.length == 1) { // WHY IS IT ONE!!!!#@!!@#!@#@
+            return TCOMPLETE_NOARGS;
+        }
 
-
-
+        return null;
+    }
 
     // Help Statement for /itemlore
     private static void itemLoreHelp(Player player) {

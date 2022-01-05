@@ -3,19 +3,18 @@ package net.wycre.itemlore.commands;
 import net.wycre.itemlore.Main;
 import net.wycre.itemlore.utils.StringManagement;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import static net.wycre.itemlore.utils.CommonStrings.*;
 
-public class ItemNameCommand implements CommandExecutor {
+public class ItemNameCommand implements TabExecutor {
 
     // Establish Main as an object to be referenced later
     private final Main main;
@@ -83,6 +82,20 @@ public class ItemNameCommand implements CommandExecutor {
         }
         return true;
     }
+
+    // Tab Completion
+    @Override
+    public List<String> onTabComplete(@NonNull CommandSender sender,
+                                      @NonNull Command command,
+                                      @NonNull String alias,
+                                      String[] args) {
+        // Unused method stub, future update may use it
+        // TODO /itemname tabcompletion
+
+        return null;
+    }
+
+
 
     // Help Statement for /itemname
     private static void itemNameHelp(Player player) {

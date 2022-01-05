@@ -10,10 +10,13 @@ public final class Main extends JavaPlugin {
     public void onEnable() {
         ItemLoreCommand itemLore = new ItemLoreCommand(this);
         ItemNameCommand itemName = new ItemNameCommand(this);
+
+        // Define Commands
         getCommand("itemlore").setExecutor(itemLore);
         getCommand("itemname").setExecutor(itemName);
 
-
+        // Define tabCompleters
+        getCommand("itemlore").setTabCompleter(itemLore);
 
     }
 
