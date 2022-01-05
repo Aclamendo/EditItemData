@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>net.wycre</groupId>
-    <artifactId>ItemLore</artifactId>
+    <artifactId>EditItemData</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>ItemLore</name>
+    <name>EditItemData</name>
 
-    <description>Allows users to modify an item's lore data using a command</description>
+    <description>Allows users to modify the name and lore of a held item</description>
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

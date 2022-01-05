@@ -1,4 +1,4 @@
-name: ItemLore
+name: EditItemData
 version: '${project.version}'
 main: net.wycre.itemlore.Main
 api-version: 1.18
@@ -8,8 +8,7 @@ website: www.wycre.net
 commands:
   itemlore:
     description: Modifies the lore of an item (supports color codes)
-    usage: /itemlore <add/remove> <text>
-
+    usage: /<command> <add/remove> [text]
   itemname:
     description: Sets the name of an item (supports color codes)
-    usage: /itemname <text>
+    usage: /<command> [text]

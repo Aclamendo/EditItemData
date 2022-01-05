@@ -1,6 +1,7 @@
 package net.wycre.itemlore.commands;
 
 import net.wycre.itemlore.Main;
+import net.wycre.itemlore.utils.StringManagement;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -21,13 +22,15 @@ import java.util.stream.Collectors;
  * Both commands fully support color codes
  * @author Wycre; Aclamendo
  */
-public class MainCommand implements CommandExecutor {
+public class ItemLoreCommand implements CommandExecutor {
     // Establish Main as an object to be referenced later
     private final Main main;
-    public MainCommand(Main main) {
+    public ItemLoreCommand(Main main) {
         this.main = main;
     }
 
+
+    // Command Logic
     @Override
     public boolean onCommand(@NonNull CommandSender sender,
                              @NonNull Command command,
@@ -45,8 +48,8 @@ public class MainCommand implements CommandExecutor {
         Player player = (Player) sender;
 
         // Check if caller has permission to run this suite of commands
-        if (!(player.isOp() || player.hasPermission("wycre.itemdata"))) {
-            player.sendMessage(ChatColor.RED + "You do not have permission to run this command");
+        if (!(player.isOp() || player.hasPermission("wycre.itemlore"))) {
+            player.sendMessage(ChatColor.RED + "You do not have permission to use this command");
             return true;
         }
 
@@ -97,7 +100,7 @@ public class MainCommand implements CommandExecutor {
                     stagingLore.add(completeLine);
 
                     // Finalize staging lore by merging it with the item
-                    metadata.setLore(this.color(stagingLore));
+                    metadata.setLore(StringManagement.color(stagingLore));
                     item.setItemMeta(metadata);
 
 
@@ -139,64 +142,15 @@ public class MainCommand implements CommandExecutor {
             return true;
         }
 
-        // /itemname command
-        if (command.getName().equalsIgnoreCase("itemname")) {
-            // Get the held item and metadata
-            ItemStack item = player.getInventory().getItemInMainHand();
-            ItemMeta metadata = item.getItemMeta();
-
-            // If User enters no args, treat like incorrect arg or help arg
-            if (args.length < 1) { // No args
-                itemNameHelp(player);
-                return true;
-            }
-
-            // check if metadata is null
-            if (metadata == null) {
-                player.sendMessage(ChatColor.RED + "You are not holding an item!");
-                return true;
-            } // End Command and warn player
-
-            // If args are present
-            else {
-                // Use StringBuilder to put all args on one string
-                StringBuilder stringBuilder = new StringBuilder();
-                // Create the new lore line from all other args
-                stringBuilder.append(args[0]); // Create initial word
-                for (int i = 1; i < args.length; i++) { // Add all other words
-                    stringBuilder.append(" ").append(args[i]);
-                } // Add all other words
-                String fullName = stringBuilder.toString();
-
-                metadata.setDisplayName(this.color(fullName));
-                item.setItemMeta(metadata);
-            } // Cat all args into a string, set displayName to that string
-
-            return true;
-        }
-
         return true;
     }
 
-    /**
-     * Translates '&' from color codes within a List to the correct char
-     * Call with <code> this.color()</code>
-     * @param lore String List containing color codes
-     * @return String List with the correct color code delimiters
-     * @author Remceau
-     */
-    private List<String> color(List<String> lore){
-        return lore.stream().map(this::color).collect(Collectors.toList());
-    }
-    /**
-     * Translates '&' from color codes within a string to the correct char
-     * @param string That contains alternate color codes
-     * @return String that has replaced the color codes with the correct ones
-     * @author Remceau
-     */
-    private String color(String string){
-        return ChatColor.translateAlternateColorCodes('&', string);
-    }
+
+    // Tab complete options
+    // TODO add tab complete options
+
+
+
 
     // Help Statement for /itemlore
     private static void itemLoreHelp(Player player) {
@@ -209,16 +163,5 @@ public class MainCommand implements CommandExecutor {
         player.sendMessage(ChatColor.LIGHT_PURPLE + "    Will remove one line of lore from the bottom");
         player.sendMessage("");
         player.sendMessage(ChatColor.DARK_RED + "===============================================");
-    }
-
-    // Help Statement for /itemname
-    private static void itemNameHelp(Player player) {
-        player.sendMessage(ChatColor.RED + "===============================================");
-        player.sendMessage(ChatColor.AQUA + "                         /itemname usage");
-        player.sendMessage("");
-        player.sendMessage(ChatColor.DARK_GREEN + "/itemname " + ChatColor.AQUA + "<New Name>");
-        player.sendMessage(ChatColor.LIGHT_PURPLE + "    Will change the name of the item (supports color codes)");
-        player.sendMessage("");
-        player.sendMessage(ChatColor.RED + "===============================================");
     }
 }
