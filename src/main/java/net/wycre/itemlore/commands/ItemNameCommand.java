@@ -13,6 +13,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.logging.Logger;
 
+import static net.wycre.itemlore.utils.CommonStrings.*;
+
 public class ItemNameCommand implements CommandExecutor {
 
     // Establish Main as an object to be referenced later
@@ -40,7 +42,7 @@ public class ItemNameCommand implements CommandExecutor {
 
         // Check if caller has permission to run this suite of commands
         if (!(player.isOp() || player.hasPermission("wycre.itemname"))) {
-            player.sendMessage(ChatColor.RED + "You do not have permission to use this command");
+            player.sendMessage(PLAYER_NEEDS_PERMISSION);
             return true;
         }
 
@@ -58,7 +60,7 @@ public class ItemNameCommand implements CommandExecutor {
 
             // check if metadata is null
             if (metadata == null) {
-                player.sendMessage(ChatColor.RED + "You are not holding an item!");
+                player.sendMessage(PLAYER_HAND_EMPTY);
                 return true;
             } // End Command and warn player
 

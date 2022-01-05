@@ -14,7 +14,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
+
+import static net.wycre.itemlore.utils.CommonStrings.*;
 
 /**
  * Handle Commands for ItemData plugin (codename ItemLore) <br><br>
@@ -49,7 +50,7 @@ public class ItemLoreCommand implements CommandExecutor {
 
         // Check if caller has permission to run this suite of commands
         if (!(player.isOp() || player.hasPermission("wycre.itemlore"))) {
-            player.sendMessage(ChatColor.RED + "You do not have permission to use this command");
+            player.sendMessage(PLAYER_NEEDS_PERMISSION);
             return true;
         }
 
@@ -67,7 +68,7 @@ public class ItemLoreCommand implements CommandExecutor {
 
             // check if metadata is null
             if (metadata == null) {
-                player.sendMessage(ChatColor.RED + "You are not holding an item!");
+                player.sendMessage(PLAYER_HAND_EMPTY);
                 return true;
             } // End Command and warn player
 
@@ -91,9 +92,7 @@ public class ItemLoreCommand implements CommandExecutor {
 
                     // Get the old lore and check if it is null
                     List<String> oldLore = metadata.getLore();
-                    if (oldLore == null) { // If old lore is null tell player a new lore is being made
-                        player.sendMessage(ChatColor.YELLOW + "Item does not have lore, creating new lore.");
-                    } else { // If old lore is not null, set the staging lore to be equal to the old lore
+                    if (!(oldLore == null)) { // If old lore is null tell player a new lore is being made
                         stagingLore = oldLore;
                     }
                     // Add the new line to the staging lore
@@ -110,7 +109,7 @@ public class ItemLoreCommand implements CommandExecutor {
                 else if (args[0].equalsIgnoreCase("remove")) {
                     List<String> stagingLore = metadata.getLore();
                     if (stagingLore == null) {
-                        player.sendMessage(ChatColor.RED + "Item has no lore to remove!");
+                        player.sendMessage(ITEM_HAS_NO_LORE);
                     } else { // A lore exists
                         // Construct message to player, First segment
                         String message1 = ChatColor.YELLOW + "Removing \"" + ChatColor.DARK_PURPLE + ChatColor.ITALIC;
