@@ -3,18 +3,25 @@ package net.wycre.itemlore.commands;
 import net.wycre.itemlore.Main;
 import net.wycre.itemlore.utils.StringManagement;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
+
+import static net.wycre.itemlore.utils.CommonStrings.*;
+
+/*
+*  ## TODO Line specifiers for /itemlore remove:
+*  - range of lines
+*  - specific lines
+*/
+
 
 /**
  * Handle Commands for ItemData plugin (codename ItemLore) <br><br>
@@ -22,12 +29,17 @@ import java.util.stream.Collectors;
  * Both commands fully support color codes
  * @author Wycre; Aclamendo
  */
-public class ItemLoreCommand implements CommandExecutor {
+public class ItemLoreCommand implements TabExecutor {
     // Establish Main as an object to be referenced later
     private final Main main;
+
+    // Constructor
     public ItemLoreCommand(Main main) {
         this.main = main;
     }
+
+    // Various Values
+    private static final List<String> TCOMPLETE_NOARGS = new ArrayList<>(Arrays.asList("add", "remove", "set"));
 
 
     // Command Logic
@@ -49,7 +61,7 @@ public class ItemLoreCommand implements CommandExecutor {
 
         // Check if caller has permission to run this suite of commands
         if (!(player.isOp() || player.hasPermission("wycre.itemlore"))) {
-            player.sendMessage(ChatColor.RED + "You do not have permission to use this command");
+            player.sendMessage(PLAYER_NEEDS_PERMISSION);
             return true;
         }
 
@@ -67,7 +79,7 @@ public class ItemLoreCommand implements CommandExecutor {
 
             // check if metadata is null
             if (metadata == null) {
-                player.sendMessage(ChatColor.RED + "You are not holding an item!");
+                player.sendMessage(PLAYER_HAND_EMPTY);
                 return true;
             } // End Command and warn player
 
@@ -75,25 +87,22 @@ public class ItemLoreCommand implements CommandExecutor {
             else {
                 // if "add" is in first arg
                 if (args[0].equalsIgnoreCase("add")) {
-                    // Use StringBuilder to put all args on one string
-                    StringBuilder stringBuilder = new StringBuilder();
-                    // Create the new lore line from all other args
-                    stringBuilder.append(args[1]); // Create initial word
-                    for (int i = 2; i < args.length; i++) { // Add all other words
-                        stringBuilder.append(" ").append(args[i]);
-                    } // Add all other words
 
-                    // convert the stringBuilder into a string
-                    String completeLine = stringBuilder.toString();
+                    // Handle Line Creation
+                    String completeLine;
+                    if (args.length > 1) {
+                        completeLine = StringManagement.argsToString(1, args);
+                    } else {
+                        player.sendMessage(MISSING_TEXT_ARG);
+                        return true;
+                    }
 
                     // Create staging list of lore lines, add new entry
                     List<String> stagingLore = new ArrayList<>();
 
                     // Get the old lore and check if it is null
                     List<String> oldLore = metadata.getLore();
-                    if (oldLore == null) { // If old lore is null tell player a new lore is being made
-                        player.sendMessage(ChatColor.YELLOW + "Item does not have lore, creating new lore.");
-                    } else { // If old lore is not null, set the staging lore to be equal to the old lore
+                    if (!(oldLore == null)) { // If old lore is null tell player a new lore is being made
                         stagingLore = oldLore;
                     }
                     // Add the new line to the staging lore
@@ -103,14 +112,14 @@ public class ItemLoreCommand implements CommandExecutor {
                     metadata.setLore(StringManagement.color(stagingLore));
                     item.setItemMeta(metadata);
 
-
+                    return true;
                 } // Handle adding lines of lore
 
                 // Removes one line from the lore
                 else if (args[0].equalsIgnoreCase("remove")) {
                     List<String> stagingLore = metadata.getLore();
                     if (stagingLore == null) {
-                        player.sendMessage(ChatColor.RED + "Item has no lore to remove!");
+                        player.sendMessage(ITEM_HAS_NO_LORE);
                     } else { // A lore exists
                         // Construct message to player, First segment
                         String message1 = ChatColor.YELLOW + "Removing \"" + ChatColor.DARK_PURPLE + ChatColor.ITALIC;
@@ -131,7 +140,67 @@ public class ItemLoreCommand implements CommandExecutor {
                         String playerMessage = message1 + message2 + message3;
                         player.sendMessage(playerMessage);
                     }
+                    return true;
                 } // handle removing lines of lore
+
+                // Set Command
+                if (args[0].equalsIgnoreCase("set")) {
+
+                    int lineNum;
+
+                    // Handle Line number
+                    try {
+                        // Attempt to parse line number
+                        lineNum = Integer.parseInt(args[1]);
+                    } catch (NumberFormatException ex) {
+                        player.sendMessage(ARG_REQUIRES_INT);
+                        return true;
+                    } catch (ArrayIndexOutOfBoundsException ex) {
+                        player.sendMessage(MISSING_LINE_ARG);
+                        return true;
+                    }
+                    if (lineNum < 1) {
+                        player.sendMessage(ARG_LESS_THAN_ONE);
+                        return true;
+                    }
+
+
+                    // Create or modify lore
+                    List<String> stagingLore;
+                    if (metadata.getLore() == null) {
+                        stagingLore = new ArrayList<>();
+                    } else {
+                        stagingLore = metadata.getLore();
+                    }
+
+                    // Handle Line Creation
+                    String completeLine;
+                    if (args.length > 2) {
+                        completeLine = StringManagement.argsToString(2, args);
+                    } else {
+                        player.sendMessage(MISSING_TEXT_ARG);
+                        return true;
+                    }
+
+                    // Handle lore on elevated lines
+                    if (metadata.getLore() == null) {
+                        for (int i = 0; i < lineNum; i++) {
+                            stagingLore.add(" ");
+                        } // Fill with empty lines
+                    } // If setting excess line in empty lore, add excess lines
+                    else if (lineNum > metadata.getLore().size()) {
+                        for (int i = metadata.getLore().size()-1; i<lineNum-1; i++ ) {
+                            stagingLore.add(" ");
+                        } // Fill with empty lines
+                    } // If setting excess line, add blank lines before
+
+                    // Merge Data and meta
+                    stagingLore.set(lineNum - 1, StringManagement.color(completeLine));
+                    metadata.setLore(stagingLore);
+                    item.setItemMeta(metadata);
+                    return true;
+                } // Handle setting lines individually
+
                 // Incorrect First arg
                 else {
                     itemLoreHelp(player);
@@ -147,10 +216,17 @@ public class ItemLoreCommand implements CommandExecutor {
 
 
     // Tab complete options
-    // TODO add tab complete options
+    @Override
+    public List<String> onTabComplete(@NonNull CommandSender sender,
+                                      @NonNull Command command,
+                                      @NonNull String alias,
+                                      String[] args) {
+        if (args.length == 1) { // WHY IS IT ONE!!!!#@!!@#!@#@
+            return TCOMPLETE_NOARGS;
+        }
 
-
-
+        return null;
+    }
 
     // Help Statement for /itemlore
     private static void itemLoreHelp(Player player) {

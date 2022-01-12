@@ -3,17 +3,18 @@ package net.wycre.itemlore.commands;
 import net.wycre.itemlore.Main;
 import net.wycre.itemlore.utils.StringManagement;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.List;
 import java.util.logging.Logger;
 
-public class ItemNameCommand implements CommandExecutor {
+import static net.wycre.itemlore.utils.CommonStrings.*;
+
+public class ItemNameCommand implements TabExecutor {
 
     // Establish Main as an object to be referenced later
     private final Main main;
@@ -40,7 +41,7 @@ public class ItemNameCommand implements CommandExecutor {
 
         // Check if caller has permission to run this suite of commands
         if (!(player.isOp() || player.hasPermission("wycre.itemname"))) {
-            player.sendMessage(ChatColor.RED + "You do not have permission to use this command");
+            player.sendMessage(PLAYER_NEEDS_PERMISSION);
             return true;
         }
 
@@ -58,21 +59,13 @@ public class ItemNameCommand implements CommandExecutor {
 
             // check if metadata is null
             if (metadata == null) {
-                player.sendMessage(ChatColor.RED + "You are not holding an item!");
+                player.sendMessage(PLAYER_HAND_EMPTY);
                 return true;
             } // End Command and warn player
 
             // If args are present
             else {
-                // Use StringBuilder to put all args on one string
-                StringBuilder stringBuilder = new StringBuilder();
-                // Create the new lore line from all other args
-                stringBuilder.append(args[0]); // Create initial word
-                for (int i = 1; i < args.length; i++) { // Add all other words
-                    stringBuilder.append(" ").append(args[i]);
-                } // Add all other words
-                String fullName = stringBuilder.toString();
-
+                String fullName = StringManagement.argsToString(0, args);
                 metadata.setDisplayName(StringManagement.color(fullName));
                 item.setItemMeta(metadata);
             } // Cat all args into a string, set displayName to that string
@@ -81,6 +74,20 @@ public class ItemNameCommand implements CommandExecutor {
         }
         return true;
     }
+
+    // Tab Completion
+    @Override
+    public List<String> onTabComplete(@NonNull CommandSender sender,
+                                      @NonNull Command command,
+                                      @NonNull String alias,
+                                      String[] args) {
+        // Unused method stub, future update may use it
+        // TODO /itemname tabcompletion
+
+        return null;
+    }
+
+
 
     // Help Statement for /itemname
     private static void itemNameHelp(Player player) {
