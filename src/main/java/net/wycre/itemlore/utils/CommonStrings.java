@@ -15,7 +15,7 @@ public class CommonStrings {
      * If the player should lack the permission for a command
      */
     public final static String PLAYER_NEEDS_PERMISSION = ChatColor.RED + "You do not have permission to use this command!";
-    public final static String PLAYER_ASKS_PERMISSION = ChatColor.RED + "Contact an administrator if you think you should have permission.";
+    // --Commented out by Inspection (1/12/2022 12:17 PM):public final static String PLAYER_ASKS_PERMISSION = ChatColor.RED + "Contact an administrator if you think you should have permission.";
 
     /**
      * If the player has made an error in command execution

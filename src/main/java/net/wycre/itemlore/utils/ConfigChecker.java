@@ -10,14 +10,12 @@ import static net.wycre.itemlore.utils.CommonStrings.*;
 
 public class ConfigChecker {
 
-    // Instanced Vars
-    private Main main;
     private FileConfiguration config;
     private String relevant;
 
     // Constructor
     public ConfigChecker(Main main, FileConfiguration config) {
-        this.main = main;
+        // Instanced Vars
         this.config = config;
     }
 

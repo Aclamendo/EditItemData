@@ -23,6 +23,7 @@ public class ItemNameCommand implements TabExecutor {
     }
 
     // Command Logic
+    @SuppressWarnings("NullableProblems")
     @Override
     public boolean onCommand(@NonNull CommandSender sender,
                              @NonNull Command command,
@@ -33,7 +34,7 @@ public class ItemNameCommand implements TabExecutor {
 
         // Check if caller is valid, if so cast caller to Player
         if (!(sender instanceof Player)) {
-            mainLog.warning("Caller must be a player");
+            mainLog.warning(CALLER_MUST_BE_PLAYER);
             return true;
         }
         // After sender is verified as player, cast the sender to a Player
@@ -76,6 +77,7 @@ public class ItemNameCommand implements TabExecutor {
     }
 
     // Tab Completion
+    @SuppressWarnings("NullableProblems")
     @Override
     public List<String> onTabComplete(@NonNull CommandSender sender,
                                       @NonNull Command command,

@@ -25,6 +25,7 @@ public final class Main extends JavaPlugin {
     private boolean validConfig;
 
     // Primary plugin logic register
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void onEnable() {
 
@@ -62,6 +63,7 @@ public final class Main extends JavaPlugin {
     }
 
     // Admin commands
+    @SuppressWarnings("NullableProblems")
     @Override
     public boolean onCommand(@NonNull CommandSender sender,
                              @NonNull Command command,

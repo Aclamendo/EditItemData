@@ -14,7 +14,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.logging.Logger;
 
 import static net.wycre.itemlore.utils.CommonStrings.*;
@@ -50,6 +49,7 @@ public class ItemLoreCommand implements TabExecutor {
 
 
     // Command Logic
+    @SuppressWarnings("NullableProblems")
     @Override
     public boolean onCommand(@NonNull CommandSender sender,
                              @NonNull Command command,
@@ -59,7 +59,7 @@ public class ItemLoreCommand implements TabExecutor {
 
         // Check if caller is valid, if so cast caller to Player
         if (!(sender instanceof Player)) {
-            log.warning("Caller must be a player");
+            log.warning(CALLER_MUST_BE_PLAYER);
             return true;
         }
         // After sender is verified as player, cast the sender to a Player
