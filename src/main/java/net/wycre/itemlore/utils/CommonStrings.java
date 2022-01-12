@@ -30,4 +30,18 @@ public class CommonStrings {
      * If the command is not applicable to a given item
      */
     public final static String ITEM_HAS_NO_LORE = ChatColor.RED + "Item already has no lore!";
+    public final static String ITEM_NOT_ALLOWED = ChatColor.RED + "You are not allowed to do that to this item!";
+
+    /**
+     * Config check failures
+     */
+    public final static String CONFIG_VER_INVALID = ChatColor.LIGHT_PURPLE + "Field configVersion must be 1! ";
+    public final static String CONFIG_IL_PROTECT_INVALID = ChatColor.LIGHT_PURPLE + "Field itemLore.protectedMaterials contains element(s) with invalid syntax! ";
+
+
+    /**
+     * Config File Paths
+     */
+    public final static String CONF_VER = "configVersion";
+    public final static String IL_PROTECT = "itemLore.protectedMaterials";
 }

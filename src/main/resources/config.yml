@@ -1,0 +1,10 @@
+configVersion: 1
+# Configuration for command behavior
+# Primary function:
+#   Define a list of items that cannot be modified by this plugin
+
+itemLore:
+  # disallow modifying lore on these items
+  protectedMaterials:
+    - minecraft:experience_bottle
+    - minecraft:netherite_ingot

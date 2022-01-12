@@ -3,7 +3,9 @@ package net.wycre.itemlore.commands;
 import net.wycre.itemlore.Main;
 import net.wycre.itemlore.utils.StringManagement;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.*;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -12,6 +14,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import static net.wycre.itemlore.utils.CommonStrings.*;
@@ -30,15 +33,19 @@ import static net.wycre.itemlore.utils.CommonStrings.*;
  * @author Wycre; Aclamendo
  */
 public class ItemLoreCommand implements TabExecutor {
-    // Establish Main as an object to be referenced later
+    // Instanced variables
     private final Main main;
+    private FileConfiguration config;
+    private Logger log;
 
     // Constructor
-    public ItemLoreCommand(Main main) {
+    public ItemLoreCommand(Main main, FileConfiguration configFile) {
         this.main = main;
+        this.config = configFile;
+        this.log = this.main.getLogger();
     }
 
-    // Various Values
+    // Static Class Values
     private static final List<String> TCOMPLETE_NOARGS = new ArrayList<>(Arrays.asList("add", "remove", "set"));
 
 
@@ -48,12 +55,11 @@ public class ItemLoreCommand implements TabExecutor {
                              @NonNull Command command,
                              @NonNull String label,
                              String[] args) {
-        // Define logger to main
-        Logger mainLog = main.getLogger();
+        config = main.getConfig();
 
         // Check if caller is valid, if so cast caller to Player
         if (!(sender instanceof Player)) {
-            mainLog.warning("Caller must be a player");
+            log.warning("Caller must be a player");
             return true;
         }
         // After sender is verified as player, cast the sender to a Player
@@ -65,23 +71,31 @@ public class ItemLoreCommand implements TabExecutor {
             return true;
         }
 
-        // /itemlore command
+        // Get the held item and metadata
+        ItemStack item = player.getInventory().getItemInMainHand();
+        ItemMeta metadata = item.getItemMeta();
+        List<String> protectedMaterials = config.getStringList(IL_PROTECT);
+
+        // check if metadata is null
+        if (metadata == null) {
+            player.sendMessage(PLAYER_HAND_EMPTY);
+            return true;
+        } // End Command and warn player
+
+        // Check if held item is allowed
+        if (isItemProtected(item, protectedMaterials)) {
+            player.sendMessage(ITEM_NOT_ALLOWED);
+            return true;
+        }
+
+        // COMMAND LOGIC
         if (command.getName().equalsIgnoreCase("itemlore")) {
-            // Get the held item and metadata
-            ItemStack item = player.getInventory().getItemInMainHand();
-            ItemMeta metadata = item.getItemMeta();
 
             // If User enters no args, treat like incorrect arg or help arg
             if (args.length < 1) { // No args
                 itemLoreHelp(player);
                 return true;
             }
-
-            // check if metadata is null
-            if (metadata == null) {
-                player.sendMessage(PLAYER_HAND_EMPTY);
-                return true;
-            } // End Command and warn player
 
             // If args are present
             else {
@@ -228,6 +242,28 @@ public class ItemLoreCommand implements TabExecutor {
         return null;
     }
 
+    // protectedMaterials Handling
+    private static boolean isItemProtected(ItemStack item, List<String> protectedMats) {
+
+        if (protectedMats == null || protectedMats.size() == 0) { return false; }
+
+        Material itemMat = item.getType();
+
+        for (String protectedMat : protectedMats) {
+            // Split input string at colon, then uppercase.
+            String[] matSplit = protectedMat.split(":");
+            String matString = matSplit[1].toUpperCase();
+            //Material checkMat = Material.getMaterial(matString);
+            if (itemMat.name().equalsIgnoreCase(matString)) {
+                return true;
+            }
+        }
+
+
+        return false;
+    }
+
+
     // Help Statement for /itemlore
     private static void itemLoreHelp(Player player) {
         player.sendMessage(ChatColor.DARK_RED + "===============================================");
@@ -241,3 +277,8 @@ public class ItemLoreCommand implements TabExecutor {
         player.sendMessage(ChatColor.DARK_RED + "===============================================");
     }
 }
+
+
+
+
+
