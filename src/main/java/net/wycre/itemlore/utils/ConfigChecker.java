@@ -4,6 +4,7 @@ import net.wycre.itemlore.Main;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.io.File;
 import java.util.List;
 
 import static net.wycre.itemlore.utils.CommonStrings.*;
@@ -11,12 +12,13 @@ import static net.wycre.itemlore.utils.CommonStrings.*;
 public class ConfigChecker {
 
     private FileConfiguration config;
-    private String relevant;
+    private String relevant; // String copy of the relevant line in a config syntax error
+    private Main main;
 
     // Constructor
     public ConfigChecker(Main main, FileConfiguration config) {
-        // Instanced Vars
         this.config = config;
+        this.main = main;
     }
 
 
@@ -39,7 +41,6 @@ public class ConfigChecker {
 
     public boolean checkItemLoreProtected() {
         List<String> list = config.getStringList(IL_PROTECT);
-
         for (String current : list) {
             String[] split = current.split(":");
             if (split.length != 2) {
@@ -49,11 +50,6 @@ public class ConfigChecker {
         }
         return true;
     }
-
-
-
-
-
 
 
 }

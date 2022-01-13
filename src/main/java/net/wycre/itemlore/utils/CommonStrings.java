@@ -35,8 +35,8 @@ public class CommonStrings {
     /**
      * Config check failures
      */
-    public final static String CONFIG_VER_INVALID = ChatColor.LIGHT_PURPLE + "Field configVersion must be 1! ";
-    public final static String CONFIG_IL_PROTECT_INVALID = ChatColor.LIGHT_PURPLE + "Field itemLore.protectedMaterials contains element(s) with invalid syntax! ";
+    public final static String CONFIG_VER_INVALID = ChatColor.LIGHT_PURPLE + "Invalid configVersion! ";
+    public final static String CONFIG_IL_PROTECT_INVALID = ChatColor.LIGHT_PURPLE + "itemLore.protectedMaterials invalid element: ";
 
 
     /**
